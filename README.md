@@ -1,4 +1,4 @@
-- 👋 Hi, I’m @zhouxiyou1
+- 👋 Hi, I’m @小周周
 - 👀 I’m interested in 编程
 - 🌱 I’m currently learning Python
 - 💞️ I’m looking to collaborate on 开发网站
