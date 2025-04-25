@@ -1,127 +1,166 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>用户登录系统</title>
-        <style>
-            body {
-                font-family: 'Arial', sans-serif;
-                background-color: #f4f4f9;
-                margin: 0;
-                padding: 0;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-                color: #333;
-            }
-            
-            .login-container {
-                background-color: white;
-                padding: 30px;
-                border-radius: 8px;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                width: 350px;
-            }
-            
-            h2 {
-                text-align: center;
-                margin-bottom: 24px;
-                color: #2c3e50;
-            }
-            
-            .form-group {
-                margin-bottom: 20px;
-            }
-            
-            label {
-                display: block;
-                margin-bottom: 8px;
-                font-weight: 600;
-            }
-            
-            input[type="text"],
-            input[type="password"] {
-                width: 100%;
-                padding: 10px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                box-sizing: border-box;
-                font-size: 16px;
-            }
-            
-            input[type="text"]:focus,
-            input[type="password"]:focus {
-                border-color: #3498db;
-                outline: none;
-                box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
-            }
-            
-            .btn {
-                background-color: #3498db;
-                color: white;
-                border: none;
-                padding: 12px;
-                width: 100%;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 16px;
-                transition: background-color 0.3s;
-            }
-            
-            .btn:hover {
-                background-color: #2980b9;
-            }
-            
-            .remember-me {
-                display: flex;
-                align-items: center;
-                margin-bottom: 20px;
-            }
-            
-            .remember-me input {
-                margin-right: 8px;
-            }
-            
-            .links {
-                display: flex;
-                justify-content: space-between;
-                margin-top: 15px;
-                font-size: 14px;
-            }
-            
-            .links a {
-                color: #3498db;
-                text-decoration: none;
-            }
-            
-            .links a:hover {
-                text-decoration: underline;
-            }
-            
-            .error-message {
-                color: #e74c3c;
-                font-size: 14px;
-                margin-top: 5px;
-                display: none;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="login-container">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户登录</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 350px;
+        }
+        
+        h2 {
+            text-align: center;
+            margin-bottom: 24px;
+            color: #2c3e50;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        
+        input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+        
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: #95a5a6;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .remember-me input {
+            margin-right: 8px;
+        }
+        
+        .links {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        
+        .links a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .links a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .tab.active {
+            border-bottom: 2px solid #3498db;
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" data-tab="login">登录</div>
+            <div class="tab" data-tab="register">注册</div>
+        </div>
+        
+        <!-- 登录表单 -->
+        <div id="loginForm" class="tab-content active">
             <h2>用户登录</h2>
-            <form id="loginForm">
+            <form id="loginFormElement">
                 <div class="form-group">
-                    <label for="username">用户名</label>
-                    <input type="text" id="username" name="username" placeholder="请输入用户名">
-                    <div id="usernameError" class="error-message">请输入用户名</div>
+                    <label for="loginUsername">用户名</label>
+                    <input type="text" id="loginUsername" name="username" placeholder="请输入用户名">
+                    <div id="loginUsernameError" class="error-message">请输入用户名</div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="password">密码</label>
-                    <input type="password" id="password" name="password" placeholder="请输入密码">
-                    <div id="passwordError" class="error-message">请输入密码</div>
+                    <label for="loginPassword">密码</label>
+                    <input type="password" id="loginPassword" name="password" placeholder="请输入密码">
+                    <div id="loginPasswordError" class="error-message">请输入密码</div>
                 </div>
                 
                 <div class="remember-me">
@@ -132,64 +171,178 @@
                 <button type="button" class="btn" id="loginBtn">登录</button>
                 
                 <div class="links">
-                    <a href=" ">忘记密码?</a >
-                    <a href="#">注册新账号</a >
+                    <a href="#" id="forgotPassword">忘记密码?</a>
                 </div>
             </form>
         </div>
-    
-        <script>
-            // 模拟用户数据库
-            const validUsers = {
-                "admin": "admin123",
-                "user1": "password1",
-                "test": "test123"
-            };
-    
-            document.getElementById('loginBtn').addEventListener('click', function() {
-                const username = document.getElementById('username').value.trim();
-                const password = document.getElementById('password').value.trim();
-                let isValid = true;
+        
+        <!-- 注册表单 -->
+        <div id="registerForm" class="tab-content">
+            <h2>用户注册</h2>
+            <form id="registerFormElement">
+                <div class="form-group">
+                    <label for="registerUsername">用户名</label>
+                    <input type="text" id="registerUsername" name="username" placeholder="请输入用户名">
+                    <div id="registerUsernameError" class="error-message"></div>
+                </div>
                 
-                // 验证用户名
-                if (username === '') {
-                    document.getElementById('usernameError').style.display = 'block';
-                    isValid = false;
-                } else {
-                    document.getElementById('usernameError').style.display = 'none';
-                }
+                <div class="form-group">
+                    <label for="registerPassword">密码</label>
+                    <input type="password" id="registerPassword" name="password" placeholder="请输入密码">
+                    <div id="registerPasswordError" class="error-message"></div>
+                </div>
                 
-                // 验证密码
-                if (password === '') {
-                    document.getElementById('passwordError').style.display = 'block';
-                    isValid = false;
-                } else {
-                    document.getElementById('passwordError').style.display = 'none';
-                }
+                <div class="form-group">
+                    <label for="confirmPassword">确认密码</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="请再次输入密码">
+                    <div id="confirmPasswordError" class="error-message"></div>
+                </div>
                 
-                if (isValid) {
-                    // 检查用户凭据
-                    if (validUsers[username] && validUsers[username] === password) {
-                        // 登录成功，跳转到主页
-                        window.location.href = "homepage.html";
-                        
-                        // 如果需要传递用户信息，可以使用URL参数或localStorage
-                        // window.location.href = "homepage.html?username=" + encodeURIComponent(username);
-                        // 或者
-                        // localStorage.setItem('username', username);
-                        // window.location.href = "homepage.html";
-                    } else {
-                        alert('用户名或密码错误！');
-                    }
-                }
+                <button type="button" class="btn" id="registerBtn">注册</button>
+                
+                <div class="links">
+                    已有账号? <a href="#" id="goToLogin">立即登录</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 初始化用户数据存储
+        if (!localStorage.getItem('users')) {
+            localStorage.setItem('users', JSON.stringify({}));
+        }
+
+        // 切换标签页
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                this.classList.add('active');
+                document.getElementById(this.dataset.tab + 'Form').classList.add('active');
             });
+        });
+
+        // 切换到登录表单
+        document.getElementById('goToLogin').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             
-            // 回车键登录功能
-            document.getElementById('password').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    document.getElementById('loginBtn').click();
+            document.querySelector('.tab[data-tab="login"]').classList.add('active');
+            document.getElementById('loginForm').classList.add('active');
+        });
+
+        // 登录功能
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            let isValid = true;
+            
+            // 验证用户名
+            if (username === '') {
+                document.getElementById('loginUsernameError').style.display = 'block';
+                document.getElementById('loginUsernameError').textContent = '请输入用户名';
+                isValid = false;
+            } else {
+                document.getElementById('loginUsernameError').style.display = 'none';
+            }
+            
+            // 验证密码
+            if (password === '') {
+                document.getElementById('loginPasswordError').style.display = 'block';
+                document.getElementById('loginPasswordError').textContent = '请输入密码';
+                isValid = false;
+            } else {
+                document.getElementById('loginPasswordError').style.display = 'none';
+            }
+            
+            if (isValid) {
+                const users = JSON.parse(localStorage.getItem('users'));
+                
+                if (users[username] && users[username].password === password) {
+                    // 登录成功，跳转到主页
+                    if (document.getElementById('remember').checked) {
+                        localStorage.setItem('currentUser', username);
+                    } else {
+                        sessionStorage.setItem('currentUser', username);
+                    }
+                    
+                    window.location.href = "homepage.html";
+                } else {
+                    document.getElementById('loginPasswordError').style.display = 'block';
+                    document.getElementById('loginPasswordError').textContent = '用户名或密码错误';
                 }
-            });
-        </script>
-</body>
-</html>
+            }
+        });
+        
+        // 注册功能
+        document.getElementById('registerBtn').addEventListener('click', function() {
+            const username = document.getElementById('registerUsername').value.trim();
+            const password = document.getElementById('registerPassword').value.trim();
+            const confirmPassword = document.getElementById('confirmPassword').value.trim();
+            let isValid = true;
+            
+            // 重置错误信息
+            document.getElementById('registerUsernameError').style.display = 'none';
+            document.getElementById('registerPasswordError').style.display = 'none';
+            document.getElementById('confirmPasswordError').style.display = 'none';
+            
+            // 验证用户名
+            if (username === '') {
+                document.getElementById('registerUsernameError').style.display = 'block';
+                document.getElementById('registerUsernameError').textContent = '请输入用户名';
+                isValid = false;
+            } else if (username.length < 4) {
+                document.getElementById('registerUsernameError').style.display = 'block';
+                document.getElementById('registerUsernameError').textContent = '用户名至少4个字符';
+                isValid = false;
+            } else if (username.length > 20) {
+                document.getElementById('registerUsernameError').style.display = 'block';
+                document.getElementById('registerUsernameError').textContent = '用户名最多20个字符';
+                isValid = false;
+            } else if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+                document.getElementById('registerUsernameError').style.display = 'block';
+                document.getElementById('registerUsernameError').textContent = '用户名只能包含字母、数字和下划线';
+                isValid = false;
+            }
+            
+            // 验证密码
+            if (password === '') {
+                document.getElementById('registerPasswordError').style.display = 'block';
+                document.getElementById('registerPasswordError').textContent = '请输入密码';
+                isValid = false;
+            } else if (password.length < 6) {
+                document.getElementById('registerPasswordError').style.display = 'block';
+                document.getElementById('registerPasswordError').textContent = '密码至少6个字符';
+                isValid = false;
+            }
+            
+            // 验证确认密码
+            if (confirmPassword === '') {
+                document.getElementById('confirmPasswordError').style.display = 'block';
+                document.getElementById('confirmPasswordError').textContent = '请确认密码';
+                isValid = false;
+            } else if (password !== confirmPassword) {
+                document.getElementById('confirmPasswordError').style.display = 'block';
+                document.getElementById('confirmPasswordError').textContent = '两次输入的密码不一致';
+                isValid = false;
+            }
+            
+            if (isValid) {
+                const users = JSON.parse(localStorage.getItem('users'));
+                
+                if (users[username]) {
+                    document.getElementById('registerUsernameError').style.display = 'block';
+                    document.getElementById('registerUsernameError').textContent = '用户名已存在';
+                } else {
+                    // 注册新用户
+                    users[username] = {
+                        password: password,
+                        registerTime: new Date().toISOString()
+                    };
+                    
+                    localStorage.setItem('users', JSON.stringify(users));
+                    
+                    alert('注册成功！请登录');
