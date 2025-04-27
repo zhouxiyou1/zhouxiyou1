@@ -3,37 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>用户认证系统</title>
+    <title>登录注册系统</title>
     <style>
-        :root {
-            --primary-color: #2196F3;
-            --error-color: #f44336;
-            --success-color: #4CAF50;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
             margin: 0;
         }
 
-        .auth-container {
+        .container {
             background: white;
             padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 350px;
         }
 
         .tabs {
             display: flex;
-            margin-bottom: 2rem;
-            border-bottom: 2px solid #eee;
+            margin-bottom: 1.5rem;
         }
 
         .tab {
@@ -41,75 +33,57 @@
             padding: 1rem;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
         }
 
         .tab.active {
-            color: var(--primary-color);
-            border-bottom: 3px solid var(--primary-color);
+            border-color: #2196F3;
+            font-weight: bold;
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         input {
             width: 100%;
-            padding: 12px;
+            padding: 0.8rem;
             border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
+            border-radius: 4px;
+            box-sizing: border-box;
         }
 
         input:focus {
             outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+            border-color: #2196F3;
+            box-shadow: 0 0 3px rgba(33,150,243,0.3);
         }
 
         button {
             width: 100%;
-            padding: 12px;
-            background: var(--primary-color);
+            padding: 0.8rem;
+            background: #2196F3;
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 16px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: background 0.3s ease;
+            font-size: 1rem;
         }
 
         button:hover {
             background: #1976D2;
         }
 
-        .alert {
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 1rem;
-            display: none;
-        }
-
-        .alert-success {
-            background: #e8f5e9;
-            color: var(--success-color);
-            border: 1px solid #c8e6c9;
-        }
-
-        .alert-error {
-            background: #ffebee;
-            color: var(--error-color);
-            border: 1px solid #ffcdd2;
-        }
-
-        .hidden {
+        .error {
+            color: #f44336;
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
             display: none;
         }
     </style>
 </head>
 <body>
-    <div class="auth-container">
+    <div class="container">
         <div class="tabs">
             <div class="tab active" data-form="login">登录</div>
             <div class="tab" data-form="register">注册</div>
@@ -117,127 +91,139 @@
 
         <!-- 登录表单 -->
         <div id="login-form">
-            <div class="alert" id="login-alert"></div>
             <div class="form-group">
-                <input type="text" id="login-username" placeholder="用户名" autocomplete="username">
+                <input type="text" id="login-username" placeholder="用户名">
+                <div class="error" id="login-user-error"></div>
             </div>
             <div class="form-group">
-                <input type="password" id="login-password" placeholder="密码" autocomplete="current-password">
+                <input type="password" id="login-password" placeholder="密码">
+                <div class="error" id="login-pass-error"></div>
             </div>
-            <button id="login-btn">立即登录</button>
+            <button id="login-btn">登录</button>
         </div>
 
         <!-- 注册表单 -->
-        <div id="register-form" class="hidden">
-            <div class="alert" id="register-alert"></div>
+        <div id="register-form" style="display: none;">
             <div class="form-group">
-                <input type="text" id="register-username" placeholder="用户名（4-20位字母数字）" autocomplete="username">
+                <input type="text" id="register-username" placeholder="用户名（4-20位）">
+                <div class="error" id="reg-user-error"></div>
             </div>
             <div class="form-group">
-                <input type="password" id="register-password" placeholder="密码（至少6位）" autocomplete="new-password">
+                <input type="password" id="register-password" placeholder="密码（至少6位）">
+                <div class="error" id="reg-pass-error"></div>
             </div>
             <div class="form-group">
-                <input type="password" id="confirm-password" placeholder="确认密码" autocomplete="new-password">
+                <input type="password" id="confirm-password" placeholder="确认密码">
+                <div class="error" id="confirm-pass-error"></div>
             </div>
-            <button id="register-btn">立即注册</button>
+            <button id="register-btn">注册</button>
         </div>
     </div>
 
     <script>
-        // 初始化存储系统
-        (function initAuthSystem() {
-            // 用户数据库初始化
-            if (!localStorage.getItem('users')) {
-                localStorage.setItem('users', JSON.stringify({
-                    'admin': 'admin123' // 默认测试账号
-                }));
-            }
+        // 初始化用户存储
+        if(!localStorage.getItem('users')) {
+            localStorage.setItem('users', JSON.stringify({}));
+        }
 
-            // 标签切换功能
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    
-                    document.getElementById('login-form').classList.toggle('hidden', tab.dataset.form !== 'login');
-                    document.getElementById('register-form').classList.toggle('hidden', tab.dataset.form !== 'register');
-                });
+        // 标签切换
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                document.getElementById('login-form').style.display = 
+                    tab.dataset.form === 'login' ? 'block' : 'none';
+                document.getElementById('register-form').style.display = 
+                    tab.dataset.form === 'register' ? 'block' : 'none';
             });
+        });
 
-            // 登录功能
-            document.getElementById('login-btn').addEventListener('click', handleLogin);
-            document.getElementById('login-password').addEventListener('keypress', e => e.key === 'Enter' && handleLogin());
-
-            // 注册功能
-            document.getElementById('register-btn').addEventListener('click', handleRegister);
-            document.getElementById('confirm-password').addEventListener('keypress', e => e.key === 'Enter' && handleRegister());
-
-            // 自动聚焦第一个输入框
-            document.querySelector('input').focus();
-        })();
-
-        async function handleLogin() {
+        // 登录功能
+        document.getElementById('login-btn').addEventListener('click', () => {
             const username = document.getElementById('login-username').value.trim();
             const password = document.getElementById('login-password').value.trim();
-            const alert = document.getElementById('login-alert');
             const users = JSON.parse(localStorage.getItem('users'));
 
-            // 清除旧提示
-            alert.classList.remove('alert-success', 'alert-error');
-            alert.style.display = 'none';
+            // 清除错误提示
+            document.querySelectorAll('#login-form .error').forEach(e => e.style.display = 'none');
 
-            // 输入验证
-            if (!username || !password) {
-                showAlert(alert, 'error', '请填写所有必填字段');
+            if(!username) {
+                showError('login-user-error', '请输入用户名');
                 return;
             }
 
-            // 用户验证
-            if (users[username] && users[username] === password) {
-                // 登录成功
+            if(!password) {
+                showError('login-pass-error', '请输入密码');
+                return;
+            }
+
+            if(users[username] && users[username] === password) {
                 localStorage.setItem('currentUser', username);
                 window.location.href = 'homepage.html';
             } else {
-                showAlert(alert, 'error', '用户名或密码错误');
+                showError('login-pass-error', '用户名或密码错误');
             }
-        }
+        });
 
-        async function handleRegister() {
+        // 注册功能
+        document.getElementById('register-btn').addEventListener('click', () => {
             const username = document.getElementById('register-username').value.trim();
             const password = document.getElementById('register-password').value.trim();
             const confirm = document.getElementById('confirm-password').value.trim();
-            const alert = document.getElementById('register-alert');
             const users = JSON.parse(localStorage.getItem('users'));
 
-            // 清除旧提示
-            alert.classList.remove('alert-success', 'alert-error');
-            alert.style.display = 'none';
+            // 清除错误提示
+            document.querySelectorAll('#register-form .error').forEach(e => e.style.display = 'none');
 
             // 用户名验证
-            if (!/^[a-zA-Z0-9_]{4,20}$/.test(username)) {
-                showAlert(alert, 'error', '用户名需为4-20位字母、数字或下划线');
+            if(username.length < 4 || username.length > 20) {
+                showError('reg-user-error', '用户名长度4-20位');
                 return;
             }
-
-            if (users[username]) {
-                showAlert(alert, 'error', '用户名已被注册');
+            if(!/^[a-zA-Z0-9_]+$/.test(username)) {
+                showError('reg-user-error', '只能包含字母、数字和下划线');
+                return;
+            }
+            if(users[username]) {
+                showError('reg-user-error', '用户名已存在');
                 return;
             }
 
             // 密码验证
-            if (password.length < 6) {
-                showAlert(alert, 'error', '密码长度至少为6位');
+            if(password.length < 6) {
+                showError('reg-pass-error', '密码至少6位');
+                return;
+            }
+            if(password !== confirm) {
+                showError('confirm-pass-error', '两次密码不一致');
                 return;
             }
 
-            if (password !== confirm) {
-                showAlert(alert, 'error', '两次输入的密码不一致');
-                return;
-            }
-
-            // 注册用户
+            // 注册成功
             users[username] = password;
             localStorage.setItem('users', JSON.stringify(users));
+            alert('注册成功！请登录');
+            document.querySelector('.tab[data-form="login"]').click();
+            document.getElementById('login-username').value = username;
+            document.getElementById('login-password').focus();
+        });
 
-            // 显示成功提示
-            showAlert(alert, 'success', '注册成功
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+
+        // 回车提交
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('keypress', e => {
+                if(e.key === 'Enter') {
+                    const activeForm = document.querySelector('.tab.active').dataset.form;
+                    document.getElementById(`${activeForm}-btn`).click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
