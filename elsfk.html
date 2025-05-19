@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>俄罗斯方块</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        #game-container {
+            position: relative;
+            margin-top: 20px;
+        }
+        #game-board {
+            border: 2px solid #333;
+            background-color: #000;
+        }
+        #score-panel {
+            margin-top: 20px;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <h1>俄罗斯方块</h1>
+    <div id="game-container">
+        <canvas id="game-board" width="300" height="600"></canvas>
+    </div>
+    <div id="score-panel">
+        得分: <span id="score">0</span>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('game-board');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        
+        const BLOCK_SIZE = 30;
+        const ROWS = 20;
+        const COLS = 10;
+        const COLORS = [
+            null,
+            '#FF0D72', // I
+            '#0DC2FF', // J
+            '#0DFF72', // L
+            '#F538FF', // O
+            '#FF8E0D', // S
+            '#FFE138', // T
+            '#3877FF', // Z
+        ];
+
+        // 方块形状
+        const SHAPES = [
+            [[1, 1, 1, 1]], // I
+            [[2, 0, 0], [2, 2, 2]], // J
+            [[0, 0, 3], [3, 3, 3]], // L
+            [[4, 4], [4, 4]], // O
+            [[0, 5, 5], [5, 5, 0]], // S
+            [[0, 6, 0], [6, 6, 6]], // T
+            [[7, 7, 0], [0, 7, 7]]  // Z
+        ];
+
+        let board = Array(ROWS).fill().map(() => Array(COLS).fill(0));
+        let score = 0;
+        let currentPiece = null;
+        let gameOver = false;
+
+        class Piece {
+            constructor(shape) {
+                this.shape = shape;
+                this.color = shape[0].find(x => x !== 0);
+                this.x = Math.floor(COLS/2) - Math.floor(shape[0].length/2);
+                this.y = 0;
+            }
+        }
+
+        function createNewPiece() {
+            const index = Math.floor(Math.random() * SHAPES.length);
+            return new Piece(SHAPES[index]);
+        }
+
+        function drawBoard() {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let row = 0; row < ROWS; row++) {
+                for (let col = 0; col < COLS; col++) {
+                    if (board[row][col]) {
+                        ctx.fillStyle = COLORS[board[row][col]];
+                        ctx.fillRect(
+                            col * BLOCK_SIZE,
+                            row * BLOCK_SIZE,
+                            BLOCK_SIZE - 1,
+                            BLOCK_SIZE - 1
+                        );
+                    }
+                }
+            }
+        }
+
+        function drawPiece() {
+            if (!currentPiece) return;
+
+            ctx.fillStyle = COLORS[currentPiece.color];
+            currentPiece.shape.forEach((row, i) => {
+                row.forEach((cell, j) => {
+                    if (cell) {
+                        ctx.fillRect(
+                            (currentPiece.x + j) * BLOCK_SIZE,
+                            (currentPiece.y + i) * BLOCK_SIZE,
+                            BLOCK_SIZE - 1,
+                            BLOCK_SIZE - 1
+                        );
+                    }
+                });
+            });
+        }
+
+        function isValidMove(piece, newX, newY) {
+            return piece.shape.every((row, i) => 
+                row.every((cell, j) => {
+                    if (!cell) return true;
+                    const x = newX + j;
+                    const y = newY + i;
+                    return x >= 0 && x < COLS && y < ROWS && !board[y][x];
+                })
+            );
+        }
+
+        function rotatePiece() {
+            const rotated = currentPiece.shape[0].map((_, i) =>
+                currentPiece.shape.map(row => row[i]).reverse()
+            );
+            if (isValidMove({ ...currentPiece, shape: rotated }, currentPiece.x, currentPiece.y)) {
+                currentPiece.shape = rotated;
+            }
+        }
+
+        function mergePiece() {
+            currentPiece.shape.forEach((row, i) => {
+                row.forEach((cell, j) => {
+                    if (cell) {
+                        board[currentPiece.y + i][currentPiece.x + j] = currentPiece.color;
+                    }
+                });
+            });
+        }
+
+        function checkLines() {
+            let linesCleared = 0;
+            for (let row = ROWS - 1; row >= 0; row--) {
+                if (board[row].every(cell => cell)) {
+                    board.splice(row, 1);
+                    board.unshift(Array(COLS).fill(0));
+                    linesCleared++;
+                    row++;
+                }
+            }
+            if (linesCleared) {
+                score += linesCleared * 100;
+                scoreElement.textContent = score;
+            }
+        }
+
+        function update() {
+            if (gameOver) return;
+
+            if (!currentPiece) {
+                currentPiece = createNewPiece();
+                if (!isValidMove(currentPiece, currentPiece.x, currentPiece.y)) {
+                    gameOver = true;
+                    alert(`游戏结束！得分: ${score}`);
+                    return;
+                }
+            }
+
+            if (isValidMove(currentPiece, currentPiece.x, currentPiece.y + 1)) {
+                currentPiece.y++;
+            } else {
+                mergePiece();
+                checkLines();
+                currentPiece = null;
+            }
+
+            drawBoard();
+            drawPiece();
+        }
+
+        document.addEventListener('keydown', event => {
+            if (gameOver) return;
+
+            switch(event.keyCode) {
+                case 37: // 左箭头
+                    if (isValidMove(currentPiece, currentPiece.x - 1, currentPiece.y)) {
+                        currentPiece.x--;
+                    }
+                    break;
+                case 39: // 右箭头
+                    if (isValidMove(currentPiece, currentPiece.x + 1, currentPiece.y)) {
+                        currentPiece.x++;
+                    }
+                    break;
+                case 40: // 下箭头
+                    if (isValidMove(currentPiece, currentPiece.x, currentPiece.y + 1)) {
+                        currentPiece.y++;
+                    }
+                    break;
+                case 38: // 上箭头（旋转）
+                    rotatePiece();
+                    break;
+            }
+            drawBoard();
+            drawPiece();
+        });
+
+        // 游戏循环
+        setInterval(update, 1000);
+    </script>
+</body>
+</html>
